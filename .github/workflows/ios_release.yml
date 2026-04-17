@@ -29,6 +29,9 @@ jobs:
           bundler-cache: true
           working-directory: ios
 
+      - name: Install CocoaPods (Ruby 3.2 기반)
+        run: gem install cocoapods --no-document
+
       - name: Pod install
         run: cd ios && pod install --repo-update
 
