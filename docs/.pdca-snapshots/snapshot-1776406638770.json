@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-04-17T06:17:18.768Z",
+  "reason": "compaction",
+  "status": {
+    "version": "2.0",
+    "lastUpdated": "2026-04-17T03:16:20.759Z",
+    "activeFeatures": [
+      "scripts",
+      "kimtaesung_sinanjuso"
+    ],
+    "primaryFeature": "scripts",
+    "features": {
+      "scripts": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-04-16T11:35:55.753Z",
+          "lastUpdated": "2026-04-16T11:35:55.753Z"
+        },
+        "lastFile": "M:\\MyProject777\\kimtaesung_sinanjuso\\scripts\\seed_policies.js"
+      },
+      "kimtaesung_sinanjuso": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-04-17T03:16:20.759Z",
+          "lastUpdated": "2026-04-17T03:16:20.759Z"
+        },
+        "lastFile": "M:\\MyProject777\\kimtaesung_sinanjuso\\generate_popups_final.py"
+      }
+    },
+    "pipeline": {
+      "currentPhase": 1,
+      "level": "Dynamic",
+      "phaseHistory": []
+    },
+    "session": {
+      "startedAt": "2026-04-16T00:20:13.820Z",
+      "onboardingCompleted": false,
+      "lastActivity": "2026-04-17T03:16:20.759Z"
+    },
+    "history": [
+      {
+        "timestamp": "2026-04-16T11:35:55.753Z",
+        "feature": "scripts",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-04-17T03:16:20.759Z",
+        "feature": "kimtaesung_sinanjuso",
+        "phase": "do",
+        "action": "updated"
+      }
+    ]
+  }
+}

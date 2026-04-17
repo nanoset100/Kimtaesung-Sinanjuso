@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1024px;
+    height: 1024px;
+    overflow: hidden;
+    background: #1e3a5f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .icon {
+    width: 1024px;
+    height: 1024px;
+    background-color: #1e3a5f;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+  .anchor {
+    width: 380px;
+    height: 380px;
+    margin-bottom: 32px;
+  }
+  .name {
+    color: #ffffff;
+    font-size: 148px;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    line-height: 1;
+  }
+  .slogan {
+    color: #bfdbfe;
+    font-size: 62px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+    margin-top: 18px;
+  }
+</style>
+</head>
+<body>
+<div class="icon">
+  <!-- 닻(앵커) SVG -->
+  <svg class="anchor" viewBox="0 0 24 24" fill="none" stroke="#c68c46" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="5" r="3"/>
+    <line x1="12" y1="22" x2="12" y2="8"/>
+    <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
+  </svg>
+  <div class="name">김태성</div>
+  <div class="slogan">신안의 희망</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>김태성 선거앱 PRD — Product Requirements Document</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  :root {
+    --blue-dark: #1B3A6B;
+    --blue-mid:  #2E6DB4;
+    --blue-light:#D0E4F7;
+    --accent:    #E8941A;
+    --gray-bg:   #F4F6FA;
+    --gray-text: #555;
+    --border:    #DDE3EE;
+    --white:     #fff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', sans-serif;
+    background: #ECEFF4;
+    color: #222;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* ── Print ── */
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; border-radius: 0; page-break-after: always; }
+    .page:last-child { page-break-after: avoid; }
+    .no-print { display: none; }
+  }
+
+  /* ── Page wrapper ── */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    margin: 20px auto;
+    padding: 24mm 20mm 20mm;
+    box-shadow: 0 4px 24px rgba(0,0,0,.12);
+    border-radius: 4px;
+    position: relative;
+  }
+
+  /* ── Page header bar ── */
+  .page-header {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 10mm;
+    background: var(--blue-dark);
+    border-radius: 4px 4px 0 0;
+    display: flex;
+    align-items: center;
+    padding: 0 20mm;
+    gap: 12px;
+  }
+  .page-header span { color: rgba(255,255,255,.7); font-size: 11px; }
+  .page-header .sep { color: rgba(255,255,255,.3); }
+  .page-header .accent { color: var(--accent); font-weight: 700; }
+
+  /* ── Page footer ── */
+  .page-footer {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 8mm;
+    border-top: 2px solid var(--blue-light);
+    display: flex;
+    align-items: center;
+    padding: 0 20mm;
+    justify-content: space-between;
+  }
+  .page-footer span { color: var(--gray-text); font-size: 10px; }
+
+  /* ── Cover page ── */
+  .cover-top {
+    text-align: center;
+    padding: 20px 0 30px;
+  }
+  .cover-top .pre-title {
+    color: var(--blue-mid);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .cover-top h1 {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--blue-dark);
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .cover-top .en-title {
+    color: var(--gray-text);
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  .cover-rule {
+    height: 5px;
+    background: linear-gradient(90deg, var(--blue-dark), var(--accent));
+    border-radius: 3px;
+    margin: 24px 0;
+  }
+
+  /* Meta table */
+  .meta-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+  .meta-table td { padding: 9px 14px; font-size: 13px; border-bottom: 1px solid var(--border); }
+  .meta-table .key { background: var(--blue-dark); color: white; font-weight: 700; width: 28%; }
+  .meta-table .val { background: var(--gray-bg); color: #222; }
+
+  .cover-quote {
+    text-align: center;
+    margin-top: 28px;
+    padding: 16px 20px;
+    background: var(--blue-light);
+    border-left: 5px solid var(--blue-mid);
+    border-radius: 4px;
+  }
+  .cover-quote .q { color: var(--blue-dark); font-size: 14px; font-style: italic; font-weight: 500; }
+  .cover-quote .attr { color: var(--gray-text); font-size: 12px; margin-top: 4px; }
+
+  /* ── Section title ── */
+  .sec-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--blue-dark);
+    border-bottom: 3px solid var(--blue-mid);
+    padding-bottom: 6px;
+    margin: 28px 0 14px;
+  }
+  .sec-title.accent { color: var(--accent); border-color: var(--accent); }
+
+  .sub-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--blue-mid);
+    margin: 18px 0 8px;
+  }
+
+  /* ── Body text ── */
+  p { margin-bottom: 10px; font-size: 13px; line-height: 1.8; }
+
+  ul { padding-left: 0; list-style: none; }
+  ul li { padding: 4px 0 4px 16px; font-size: 13px; position: relative; }
+  ul li::before { content: '•'; position: absolute; left: 0; color: var(--blue-mid); font-weight: 700; }
+
+  /* ── Goals table ── */
+  .goals-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  .goals-table td { padding: 9px 14px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .goals-table .no { background: var(--accent); color: white; font-weight: 700; width: 60px; text-align: center; white-space: nowrap; }
+  .goals-table .content { background: white; }
+  .goals-table tr:nth-child(even) .content { background: var(--gray-bg); }
+
+  /* ── Policy cards ── */
+  .policy-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .policy-card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--blue-dark);
+  }
+  .policy-card-head .emoji { font-size: 22px; }
+  .policy-card-body { padding: 2px 16px 12px 52px; }
+  .policy-card-body li { font-size: 12.5px; color: #333; }
+
+  .card-blue  { background: #EBF4FF; }
+  .card-yellow{ background: #FFFCE8; }
+  .card-purple{ background: #F0EEFF; }
+  .card-green { background: #EDFBF0; }
+  .card-orange{ background: #FFF5EA; }
+  .card-pink  { background: #FFF0F5; }
+
+  /* ── Features table ── */
+  .feat-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .feat-table th { background: var(--blue-dark); color: white; padding: 9px 12px; font-size: 12px; font-weight: 700; text-align: left; }
+  .feat-table th:first-child { width: 36px; text-align: center; }
+  .feat-table th:nth-child(2) { width: 110px; }
+  .feat-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
+  .feat-table tr:nth-child(even) td { background: var(--gray-bg); }
+  .feat-table .no-cell { background: var(--blue-dark) !important; color: white; font-weight: 900; font-size: 15px; text-align: center; }
+  .feat-table .name-cell { font-weight: 700; color: var(--blue-dark); }
+  .feat-table .name-sub { font-size: 11px; color: var(--gray-text); font-weight: 400; }
+
+  /* ── Tech table ── */
+  .tech-table { width: 100%; border-collapse: collapse; }
+  .tech-table td { padding: 8px 14px; font-size: 13px; border-bottom: 1px solid var(--border); }
+  .tech-table .key { background: var(--blue-light); color: var(--blue-dark); font-weight: 700; width: 130px; }
+  .tech-table .val { background: white; }
+
+  /* ── Policy compliance boxes ── */
+  .compliance-box {
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .compliance-box h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .compliance-box ul li { font-size: 12.5px; }
+  .box-red    { background: #FFF5F5; border-left: 4px solid #E53E3E; }
+  .box-red h4 { color: #C53030; }
+  .box-green  { background: #F0FFF4; border-left: 4px solid #38A169; }
+  .box-green h4 { color: #276749; }
+  .box-blue   { background: var(--blue-light); border-left: 4px solid var(--blue-mid); }
+  .box-blue h4 { color: var(--blue-dark); }
+
+  /* ── Timeline (phases) ── */
+  .phase-table { width: 100%; border-collapse: collapse; }
+  .phase-table th { background: var(--blue-dark); color: white; padding: 8px 14px; font-size: 12px; }
+  .phase-table td { padding: 9px 14px; font-size: 12.5px; border-bottom: 1px solid var(--border); }
+  .phase-table tr:nth-child(even) td { background: var(--gray-bg); }
+  .phase-table .phase-no { font-weight: 700; color: var(--blue-mid); white-space: nowrap; }
+
+  /* ── KPI table ── */
+  .kpi-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+  .kpi-card {
+    flex: 1 1 180px;
+    background: var(--gray-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+  }
+  .kpi-card .kpi-num { font-size: 24px; font-weight: 900; color: var(--blue-dark); }
+  .kpi-card .kpi-unit { font-size: 11px; color: var(--gray-text); }
+  .kpi-card .kpi-label { font-size: 12px; color: #333; margin-top: 4px; }
+
+  /* ── Closing quote ── */
+  .closing {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+    border-top: 2px solid var(--blue-light);
+    color: var(--blue-mid);
+    font-size: 14px;
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  /* ── Print button ── */
+  .print-bar {
+    width: 210mm;
+    margin: 0 auto 10px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  .btn-print {
+    background: var(--blue-dark);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 700;
+  }
+  .btn-print:hover { background: var(--blue-mid); }
+</style>
+</head>
+<body>
+
+<div class="no-print print-bar">
+  <button class="btn-print" onclick="window.print()">🖨️ 인쇄 / PDF 저장</button>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 1 : COVER
+════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span>김태성 신안군수 예비후보</span>
+    <span class="sep">|</span>
+    <span>공식 선거앱 PRD</span>
+    <span class="sep">|</span>
+    <span class="accent">Flutter Cross-Platform</span>
+  </div>
+
+  <div class="cover-top">
+    <div class="pre-title">김태성 신안군수 예비후보</div>
+    <h1>공식 선거<br>모바일 앱</h1>
+    <div class="en-title">Product Requirements Document &nbsp;|&nbsp; v1.0</div>
+  </div>
+
+  <div class="cover-rule"></div>
+
+  <table class="meta-table">
+    <tr><td class="key">문서 버전</td><td class="val">v1.0 (Draft)</td></tr>
+    <tr><td class="key">작성일</td><td class="val">2026년 4월 16일</td></tr>
+    <tr><td class="key">플랫폼</td><td class="val">Flutter (iOS · Android 동시 지원)</td></tr>
+    <tr><td class="key">대상 후보</td><td class="val">김태성 — 신안군수 예비후보</td></tr>
+    <tr><td class="key">목적</td><td class="val">선거 캠프 공식 앱의 기능 요구사항 정의</td></tr>
+    <tr><td class="key">패키지명</td><td class="val">com.kimtaesung.sinanjuso</td></tr>
+    <tr><td class="key">보안 등급</td><td class="val">대외비 (캠프 내부용)</td></tr>
+  </table>
+
+  <div class="cover-quote">
+    <div class="q">"신안의 모든 공간을 살아있는 관광 콘텐츠로 바꾸겠습니다"</div>
+    <div class="attr">— 김태성 신안군수 예비후보</div>
+  </div>
+
+  <div class="page-footer">
+    <span>© 2026 김태성 선거캠프 &nbsp;|&nbsp; 대외비 — 내부용</span>
+    <span>p.1</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 2 : 개요 + 목표
+════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span>김태성 선거앱 PRD</span><span class="sep">|</span><span>1. 프로젝트 개요 &amp; 목표</span>
+  </div>
+
+  <div class="sec-title">1. 프로젝트 개요</div>
+  <p>신안군수 예비후보 김태성의 공식 선거 앱으로, 유권자와 후보 사이의 직접 소통 채널을 구축합니다. 섬으로 이루어진 신안군의 지리적 특성과 고령 인구를 고려해 접근성과 직관성을 최우선으로 설계합니다. 단순한 홍보 앱을 넘어, 후보의 핵심 정책 비전을 유권자가 직접 체험·평가하고 의견을 전달할 수 있는 쌍방향 플랫폼을 지향합니다.</p>
+
+  <div class="sub-title">앱의 핵심 방향</div>
+  <ul>
+    <li><strong>정책 중심 설계:</strong> 김태성 후보의 6대 공약이 앱의 가장 중요한 콘텐츠</li>
+    <li><strong>접근성 우선:</strong> 고령 유권자를 포함한 전 연령대 — 최소 글자 16sp, 버튼 48dp</li>
+    <li><strong>쌍방향 소통:</strong> 일방적 홍보가 아닌 군민 의견 수렴 및 전달</li>
+    <li><strong>신뢰성 확보:</strong> 팩트체크 기능으로 투명한 정치 문화 조성</li>
+    <li><strong>오프라인 대응:</strong> 도서 지역 특성 고려 — 네트워크 없이도 핵심 콘텐츠 열람</li>
+  </ul>
+
+  <div class="sec-title" style="margin-top:24px;">2. 핵심 목표 (Goals)</div>
+  <table class="goals-table">
+    <tr>
+      <td class="no">G-01</td>
+      <td class="content">후보 정책 인지도 향상 — 신안군 전체 유권자의 <strong>60% 이상</strong>이 주요 공약을 인지</td>
+    </tr>
+    <tr>
+      <td class="no">G-02</td>
+      <td class="content">유권자 참여 확대 — 출마 선언 <strong>1개월 내 앱 다운로드 5,000건</strong> 달성</td>
+    </tr>
+    <tr>
+      <td class="no">G-03</td>
+      <td class="content">직접 소통 채널 구축 — 민원·의견 제출 후 <strong>48시간 내 응답</strong> 시스템 운영</td>
+    </tr>
+    <tr>
+      <td class="no">G-04</td>
+      <td class="content">신뢰도 제고 — 팩트체크 기능으로 허위 정보 대응 및 투명성 확보</td>
+    </tr>
+    <tr>
+      <td class="no">G-05</td>
+      <td class="content">선거일 투표율 제고 — Push 알림 및 D-Day 카운트다운으로 투표 참여 독려</td>
+    </tr>
+  </table>
+
+  <div class="page-footer">
+    <span>© 2026 김태성 선거캠프 &nbsp;|&nbsp; 대외비</span><span>p.2</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 3 : 핵심 정책 (★ 메인)
+════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span>김태성 선거앱 PRD</span><span class="sep">|</span><span class="accent">3. 김태성 후보 6대 핵심 정책</span>
+  </div>
+
+  <div class="sec-title accent">3. 김태성 후보 핵심 정책 — 앱의 중심 콘텐츠</div>
+  <p style="color:var(--gray-text); font-size:12.5px;">이 섹션은 앱 내 <strong>'정책 소개'</strong> 화면의 콘텐츠 기반입니다. 6개 정책 영역이 앱의 메인 콘텐츠를 구성하며, 각 정책은 카드 UI로 시각화됩니다.</p>
+
+  <div class="policy-card">
+    <div class="policy-card-head card-blue">
+      <span class="emoji">🏝</span>
+      <span>관광 비전 — 섬 전체가 하나의 작품이 됩니다</span>
+    </div>
+    <div class="policy-card-body"><ul>
+      <li>섬별 특화 콘텐츠 개발: 자연·문화·생활 기반의 차별화된 관광 콘텐츠 구축</li>
+      <li>생활이 관광이 되는 구조: 주민의 삶과 생산 활동을 관광 자원으로 확장</li>
+      <li>신안 전체 관광 네트워크: 섬 지역 접근성 확보 및 통합 관광 경험 제공</li>
+    </ul></div>
+  </div>
+
+  <div class="policy-card">
+    <div class="policy-card-head card-yellow">
+      <span class="emoji">💰</span>
+      <span>경제 정책 — 군민의 지갑이 두꺼워지는 신안</span>
+    </div>
+    <div class="policy-card-body"><ul>
+      <li>농수산물 제값 받는 유통구조 개선으로 어민·농민 소득 직접 증가</li>
+      <li>관광·에너지 사업 주민 참여 확대 (수익 공유 구조)</li>
+      <li>군민이 직접 체감하는 소득 증가 체계 마련</li>
+    </ul></div>
+  </div>
+
+  <div class="policy-card">
+    <div class="policy-card-head card-purple">
+      <span class="emoji">🏛</span>
+      <span>공직자 3대 공약 — 공정하고 존중받는 행정</span>
+    </div>
+    <div class="policy-card-body"><ul>
+      <li>공무원 권한 회복: 측근 개입 차단, 정책·예산·행정 공직자 중심 민원 처리</li>
+      <li>공직자 존중 행정: 직원 복지 우선 강화, 폭언·인격 모독 없는 조직 문화</li>
+      <li>공정 인사 원칙: 줄서기·소문 인사 근절, 성과 중심 공정 인사, 다면평가 도입</li>
+    </ul></div>
+  </div>
+
+  <div class="policy-card">
+    <div class="policy-card-head card-green">
+      <span class="emoji">🤝</span>
+      <span>열린 군정 — 군민이 주인인 신안</span>
+    </div>
+    <div class="policy-card-body"><ul>
+      <li>정책 계획부터 군민 참여: 아이디어 공모·온라인 의견 수렴</li>
+      <li>행정 실행과 평가에 군민 참여: 중간 점검 공개 보고</li>
+      <li>열린 군정 실현: 정보 투명 공개, 소통 창구 상시 운영</li>
+    </ul></div>
+  </div>
+
+  <div class="policy-card">
+    <div class="policy-card-head card-orange">
+      <span class="emoji">📞</span>
+      <span>주민불편 ZERO 프로젝트 — 불편은 줄이고, 응답은 빠르게</span>
+    </div>
+    <div class="policy-card-body"><ul>
+      <li>연중무휴 24시간 민원 응답: 전화·문자·카카오톡·앱 통합 접수</li>
+      <li>생활 밀착형 지원: 어르신 병원 예약·이동 지원, 전기·수도·보일러 수리 지원</li>
+      <li>즉각적인 현장 대응: 긴급 민원 즉시 출동, 읍·면 단위 전담 인력 배치</li>
+      <li>통합 민원 플랫폼: 접수부터 처리까지 원스톱, 지연 시 자동 알림</li>
+    </ul></div>
+  </div>
+
+  <div class="policy-card">
+    <div class="policy-card-head card-pink">
+      <span class="emoji">❤️</span>
+      <span>해피100 복지 — 모든 군민이 편안한 신안</span>
+    </div>
+    <div class="policy-card-body"><ul>
+      <li>주거·돌봄 통합: 농촌형 주거단지, 실버타운·돌봄센터 운영</li>
+      <li>의료·이동 지원: 교통약자 동행 서비스, 의료 동행 확대</li>
+      <li>생활 돌봄 강화: 영양지원·공동식사, 방과 후 학교·돌봄 지원</li>
+      <li>교육·미래 인재: 해외연수·교육 프로그램</li>
+      <li>안전·무장애 환경: 경로당 안전시설, 배리어프리 생활환경 확대</li>
+    </ul></div>
+  </div>
+
+  <div class="page-footer">
+    <span>© 2026 김태성 선거캠프 &nbsp;|&nbsp; 대외비</span><span>p.3</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 4 : 6대 기능 요구사항
+════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span>김태성 선거앱 PRD</span><span class="sep">|</span><span>4. 6대 핵심 기능</span>
+  </div>
+
+  <div class="sec-title">4. 앱 6대 핵심 기능 요구사항</div>
+  <p style="font-size:12.5px; color:var(--gray-text);">Flutter 기반 iOS·Android 동시 지원. 우선순위 P0 → P1 → P2 순서로 개발합니다.</p>
+
+  <table class="feat-table" style="margin-top:12px;">
+    <thead>
+      <tr>
+        <th></th>
+        <th>기능명</th>
+        <th>주요 요구사항</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="no-cell">①</td>
+        <td><div class="name-cell">정치인 프로필</div><div class="name-sub">랜딩 페이지 · P0</div></td>
+        <td>
+          이름·사진·선거구·소속 정당 표시 / 경력 타임라인 (학력·직책·수상) / 핵심 정책 입장 6개 카테고리 카드 /
+          SNS 링크 (Facebook·Instagram·YouTube·카카오톡) / 앱 실행 시 첫 화면 /
+          오프라인 캐시 지원 (Hive)
+        </td>
+      </tr>
+      <tr>
+        <td class="no-cell">②</td>
+        <td><div class="name-cell">정책 소개 ★</div><div class="name-sub">핵심 기능 · P0</div></td>
+        <td>
+          6개 정책 카드 목록 화면 / 정책 상세: 배경·목표·추진계획·기대효과 /
+          정책별 로드맵 타임라인 / 관련 사진·영상 갤러리 /
+          카카오톡·문자 공유 기능 / 유권자 별점 평가 (익명·Firestore 집계)
+        </td>
+      </tr>
+      <tr>
+        <td class="no-cell">③</td>
+        <td><div class="name-cell">뉴스 피드</div><div class="name-sub">재방문 유도 · P1</div></td>
+        <td>
+          후보 관련 뉴스 RSS 자동 수집 / 캠프 공식 보도자료·영상 통합 /
+          카테고리 필터 (지역·정책·인터뷰) / 출처 언론사 표시 /
+          카카오톡·링크 공유 / shimmer 스켈레톤 로딩 UX
+        </td>
+      </tr>
+      <tr>
+        <td class="no-cell">④</td>
+        <td><div class="name-cell">직접 연락</div><div class="name-sub">유권자 소통 · P1</div></td>
+        <td>
+          전화·이메일·카카오톡 원터치 연결 (url_launcher) /
+          선거 캠프 위치 지도 (Google Maps Flutter) /
+          문의 유형 선택 (정책·민원·자원봉사·취재) /
+          UGC 필터링 (욕설·혐오 표현 검사) / 접수 확인 알림
+        </td>
+      </tr>
+      <tr>
+        <td class="no-cell">⑤</td>
+        <td><div class="name-cell">설문 및 투표</div><div class="name-sub">참여형 · P2</div></td>
+        <td>
+          정책별 찬반·우선순위 설문 / 자유 의견 입력 (500자) /
+          실시간 집계 차트 (StreamBuilder + Firestore) /
+          익명 참여 보장 (sha256 해시 ID) /
+          지역(읍·면)별 의견 분류 / 중복 참여 방지
+        </td>
+      </tr>
+      <tr>
+        <td class="no-cell">⑥</td>
+        <td><div class="name-cell">팩트체크 &amp; 알림</div><div class="name-sub">신뢰도 · P2</div></td>
+        <td>
+          발언·공약 팩트체크 (GREEN·YELLOW·RED 등급) / 출처 명시 필수 /
+          유세 일정·주요 이벤트 Push 알림 (FCM) /
+          선거일 D-Day 카운트다운 위젯 /
+          투표소 위치 안내 (행정안전부 API) /
+          알림 항목별 개인화 ON/OFF
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer">
+    <span>© 2026 김태성 선거캠프 &nbsp;|&nbsp; 대외비</span><span>p.4</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 5 : 기술 + 정책 + 일정 + KPI
+════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span>김태성 선거앱 PRD</span><span class="sep">|</span><span>5. 기술 스택 · 앱스토어 정책 · 일정 · KPI</span>
+  </div>
+
+  <div class="sec-title">5. 기술 스택 (Flutter)</div>
+  <table class="tech-table">
+    <tr><td class="key">프레임워크</td><td class="val">Flutter 3.x (Dart) — iOS 14+ / Android 8+</td></tr>
+    <tr><td class="key">상태 관리</td><td class="val">flutter_riverpod 2.5.1</td></tr>
+    <tr><td class="key">네트워크</td><td class="val">Dio 5.4.3 + Retrofit 4.1.0</td></tr>
+    <tr><td class="key">로컬 DB</td><td class="val">hive_flutter 1.1.0 (오프라인 캐시)</td></tr>
+    <tr><td class="key">Push 알림</td><td class="val">Firebase Cloud Messaging (FCM)</td></tr>
+    <tr><td class="key">지도</td><td class="val">google_maps_flutter 2.6.0</td></tr>
+    <tr><td class="key">분석</td><td class="val">Firebase Analytics + Crashlytics (익명 집계만)</td></tr>
+    <tr><td class="key">디자인 시스템</td><td class="val">Material 3 &nbsp;|&nbsp; Blue #1B3A6B &nbsp;·&nbsp; Accent #E8941A</td></tr>
+    <tr><td class="key">CI/CD</td><td class="val">GitHub Actions + Fastlane</td></tr>
+  </table>
+
+  <div class="sec-title" style="margin-top:20px;">6. 앱스토어 정책 준수 핵심 원칙</div>
+  <div class="compliance-box box-red">
+    <h4>❌ 절대 구현 금지 (Google Play / App Store 위반)</h4>
+    <ul>
+      <li>앱 내 정치 기부금·후원금 직접 결제 버튼 — 외부 링크(url_launcher)로만 안내</li>
+      <li>상대 후보 실명 비방·공격 콘텐츠 삽입</li>
+      <li>설문 참여 시 이름·연락처 등 개인 식별 정보 수집</li>
+      <li>위치 데이터 서버 전송 (투표소 안내 시 기기 내 처리만 허용)</li>
+      <li>Google AdMob 등 광고 SDK 삽입 (정치 앱 광고 정책 위반)</li>
+    </ul>
+  </div>
+  <div class="compliance-box box-green">
+    <h4>✅ 반드시 구현</h4>
+    <ul>
+      <li>익명 설문 — sha256(deviceId + surveyId) 해시 ID만 사용</li>
+      <li>UGC(사용자 입력) 서버 측 금칙어 필터링 적용</li>
+      <li>WCAG 2.1 AA 접근성 — 최소 터치 영역 48×48dp</li>
+      <li>Firebase Analytics 익명 집계만 허용, 개인 식별 이벤트 금지</li>
+      <li>연령 등급 4+ (Apple) / 전체이용가 (Google Play)</li>
+    </ul>
+  </div>
+
+  <div class="sec-title" style="margin-top:20px;">7. 개발 일정 (제안)</div>
+  <table class="phase-table">
+    <thead>
+      <tr><th>단계</th><th>기간</th><th>주요 산출물</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="phase-no">Phase 1 기획·디자인</td><td>2주</td><td>와이어프레임, 디자인 시스템, Firebase 프로젝트 설정</td></tr>
+      <tr><td class="phase-no">Phase 2 핵심 개발</td><td>4주</td><td>프로필·정책 소개·뉴스피드 구현, 백엔드 연동</td></tr>
+      <tr><td class="phase-no">Phase 3 부가 기능</td><td>3주</td><td>설문투표·직접연락·팩트체크·알림 구현</td></tr>
+      <tr><td class="phase-no">Phase 4 테스트·출시</td><td>1주</td><td>QA, App Store + Google Play 심사 제출</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sec-title" style="margin-top:20px;">8. 성공 지표 (KPIs)</div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-num">5,000</div>
+      <div class="kpi-unit">건</div>
+      <div class="kpi-label">출시 1개월 내 다운로드</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">70%</div>
+      <div class="kpi-unit"></div>
+      <div class="kpi-label">사용자 정책 화면 열람율</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">30%</div>
+      <div class="kpi-unit"></div>
+      <div class="kpi-label">설문 참여율</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">4.0+</div>
+      <div class="kpi-unit">점</div>
+      <div class="kpi-label">앱스토어 평점 유지</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">200</div>
+      <div class="kpi-unit">건/월</div>
+      <div class="kpi-label">앱 통한 민원·문의</div>
+    </div>
+  </div>
+
+  <div class="closing">
+    "군민과 함께 신안을 바꾸겠습니다" — 김태성
+  </div>
+
+  <div class="page-footer">
+    <span>© 2026 김태성 선거캠프 &nbsp;|&nbsp; 대외비</span><span>p.5</span>
+  </div>
+</div>
+
+</body>
+</html>

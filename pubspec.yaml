@@ -1,0 +1,78 @@
+name: sinanjuso
+description: "김태성 신안군수 예비후보 공식 선거앱"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # 상태 관리
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.4
+
+  # 네트워크
+  dio: ^5.4.3
+  retrofit: ^4.1.0
+
+  # 로컬 DB (오프라인 캐시)
+  hive_flutter: ^1.1.0
+
+  # Firebase
+  firebase_core: ^3.6.0
+  firebase_analytics: ^11.3.3
+  firebase_messaging: ^15.1.3
+  cloud_firestore: ^5.4.4
+
+  # UI
+  cached_network_image: ^3.3.1
+  flutter_svg: ^2.0.10
+  shimmer: ^3.0.0
+
+  # 지도
+  google_maps_flutter: ^2.9.0
+
+  # 링크/연락
+  url_launcher: ^6.3.0
+
+  # 알림 스케줄
+  flutter_local_notifications: ^17.2.1
+
+  # 공유
+  share_plus: ^12.0.2
+
+  # 접근성 — 고령자 TTS
+  flutter_tts: ^3.8.5
+
+  # 익명 해시 (설문)
+  crypto: ^3.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.9
+  riverpod_generator: ^2.3.9
+  retrofit_generator: ^8.1.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  adaptive_icon_background: "#1e3a5f"
+  adaptive_icon_foreground: "assets/images/app_icon.png"
+  min_sdk_android: 21
+  web:
+    generate: false
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/

@@ -1,0 +1,67 @@
+// ══════════════════════════════════════════════════════════
+// Firestore 보안 규칙 — 김태성 신안군수 앱
+// CLAUDE.md §8 완전 구현
+//
+// Firebase Console → Firestore → 규칙 탭에 붙여넣기
+// 또는: firebase deploy --only firestore:rules
+// ══════════════════════════════════════════════════════════
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── 정책 데이터: 읽기만 허용 ─────────────────────────
+    // 앱에서 읽기 전용 — 데이터 수정은 Admin SDK(시드 스크립트)만 가능
+    match /policies/{policyId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // ── 정책 별점 결과: 익명 생성만 허용 ─────────────────
+    // 허용 필드: policyId, rating, timestamp 만
+    // 문서 ID = sha256(deviceKey + policyId) → 중복 제출 자동 차단
+    match /survey_results/{voteId} {
+      allow read:   if false;   // 개별 결과 열람 금지
+      allow create: if
+        request.resource.data.keys().hasOnly(['policyId', 'rating', 'timestamp']) &&
+        request.resource.data.rating is int &&
+        request.resource.data.rating >= 1 &&
+        request.resource.data.rating <= 5 &&
+        request.resource.data.policyId is string;
+      allow update, delete: if false;
+    }
+
+    // ── 설문 투표 결과: 익명 생성만 허용 ─────────────────
+    // 허용 필드: surveyId, questionId, optionId, timestamp 만
+    // 문서 ID = sha256(deviceKey + surveyId + questionId) → 중복 차단
+    match /survey_votes/{voteId} {
+      allow read:   if false;   // 개별 투표 열람 금지
+      allow create: if
+        request.resource.data.keys().hasOnly(['surveyId', 'questionId', 'optionId', 'timestamp']) &&
+        request.resource.data.surveyId is string &&
+        request.resource.data.questionId is string &&
+        request.resource.data.optionId is string;
+      allow update, delete: if false;
+    }
+
+    // ── 설문 집계 데이터: 읽기만 허용 ────────────────────
+    // Cloud Functions가 survey_votes 생성 이벤트를 감지하여 집계
+    // 앱은 읽기 전용 구독
+    match /survey_aggregates/{aggId} {
+      allow read:  if true;
+      allow write: if false;   // Cloud Functions만 수정 가능
+    }
+
+    // ── 문의 접수: 익명 생성만 허용 ──────────────────────
+    // 허용 필드: type, content, timestamp 만 (이름·연락처 저장 금지)
+    match /inquiries/{inquiryId} {
+      allow read:   if false;   // 앱에서 목록 조회 금지 (관리자 전용)
+      allow create: if
+        request.resource.data.keys().hasOnly(['type', 'content', 'timestamp']) &&
+        request.resource.data.type is string &&
+        request.resource.data.content is string &&
+        request.resource.data.content.size() <= 500;
+      allow update, delete: if false;
+    }
+  }
+}

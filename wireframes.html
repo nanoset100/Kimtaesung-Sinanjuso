@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>김태성 선거앱 — Flutter 와이어프레임</title>
+<style>
+  :root {
+    --blue-dark: #1B3A6B;
+    --blue-mid: #2E6DB4;
+    --blue-light: #D0E4F7;
+    --accent: #E8941A;
+    --gray-bg: #F4F6FA;
+    --gray-text: #666;
+    --white: #fff;
+    --border: #ddd;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    background: #ECEFF4;
+    padding: 20px;
+  }
+
+  h1.page-title {
+    text-align: center;
+    color: var(--blue-dark);
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    text-align: center;
+    color: var(--gray-text);
+    font-size: 13px;
+    margin-bottom: 30px;
+  }
+
+  /* Tab nav */
+  .tab-nav {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
+  .tab-btn {
+    padding: 8px 16px;
+    border: 2px solid var(--blue-mid);
+    background: white;
+    color: var(--blue-mid);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    transition: all .2s;
+  }
+  .tab-btn.active, .tab-btn:hover {
+    background: var(--blue-mid);
+    color: white;
+  }
+
+  /* Screen grid */
+  .screen-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+  }
+
+  .screen-wrapper {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+  }
+  .screen-wrapper.visible { display: flex; }
+
+  .screen-label {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--blue-dark);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  /* Phone shell */
+  .phone {
+    width: 320px;
+    height: 640px;
+    background: white;
+    border-radius: 36px;
+    border: 4px solid #222;
+    box-shadow: 0 8px 32px rgba(0,0,0,.18);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Status bar */
+  .status-bar {
+    background: var(--blue-dark);
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    flex-shrink: 0;
+  }
+  .status-bar span { color: white; font-size: 10px; }
+
+  /* App bar */
+  .app-bar {
+    background: var(--blue-dark);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .app-bar .back-btn {
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .app-bar .title {
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    flex: 1;
+  }
+  .app-bar .action { color: white; font-size: 13px; }
+
+  /* Scroll content */
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--gray-bg);
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* Bottom nav */
+  .bottom-nav {
+    background: white;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-shrink: 0;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 7px 0 5px;
+    cursor: pointer;
+    font-size: 9px;
+    color: var(--gray-text);
+    gap: 2px;
+  }
+  .nav-item.active { color: var(--blue-dark); }
+  .nav-item .nav-icon { font-size: 18px; }
+  .nav-item.active .nav-icon { }
+
+  /* ── UI Components ── */
+
+  /* Hero banner */
+  .hero {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 100%);
+    padding: 20px 14px 16px;
+    text-align: center;
+  }
+  .hero .candidate-img {
+    width: 64px; height: 64px;
+    background: rgba(255,255,255,.25);
+    border-radius: 50%;
+    margin: 0 auto 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    border: 3px solid rgba(255,255,255,.6);
+  }
+  .hero .candidate-name { color: white; font-size: 18px; font-weight: bold; }
+  .hero .candidate-sub { color: rgba(255,255,255,.8); font-size: 11px; margin-top: 2px; }
+  .hero .badge {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-top: 6px;
+  }
+
+  /* Section in scroll */
+  .section {
+    background: white;
+    margin: 8px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .section-title {
+    padding: 10px 14px 6px;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--blue-dark);
+    border-bottom: 1px solid var(--blue-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-title .see-all {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--blue-mid);
+    font-weight: normal;
+    cursor: pointer;
+  }
+
+  /* Policy card (in list) */
+  .policy-card {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    gap: 10px;
+  }
+  .policy-card:last-child { border-bottom: none; }
+  .policy-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .policy-card-text .title { font-size: 12px; font-weight: bold; color: #222; }
+  .policy-card-text .sub { font-size: 10px; color: var(--gray-text); margin-top: 2px; }
+  .policy-card .arrow { margin-left: auto; color: var(--gray-text); font-size: 13px; }
+
+  /* Rating stars */
+  .stars { color: #FFC107; font-size: 11px; }
+
+  /* News card */
+  .news-card {
+    display: flex;
+    padding: 10px 14px;
+    border-bottom: 1px solid #f0f0f0;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .news-thumb {
+    width: 56px; height: 46px;
+    background: var(--blue-light);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .news-text .headline { font-size: 11px; font-weight: bold; color: #222; line-height: 1.4; }
+  .news-text .meta { font-size: 9px; color: var(--gray-text); margin-top: 4px; }
+
+  /* Contact button */
+  .contact-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+  }
+  .contact-btn:last-child { border-bottom: none; }
+  .contact-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+  }
+  .contact-btn .label { font-size: 12px; font-weight: bold; color: #222; }
+  .contact-btn .val { font-size: 10px; color: var(--gray-text); }
+  .contact-btn .ext { margin-left: auto; color: var(--blue-mid); font-size: 18px; }
+
+  /* Survey */
+  .survey-card {
+    margin: 8px;
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .survey-q { font-size: 12px; font-weight: bold; color: #222; margin-bottom: 10px; line-height: 1.4; }
+  .survey-options { display: flex; flex-direction: column; gap: 6px; }
+  .survey-option {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .survey-option.selected {
+    border-color: var(--blue-mid);
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    font-weight: bold;
+  }
+  .survey-option .radio {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .survey-option.selected .radio {
+    border-color: var(--blue-mid);
+    background: var(--blue-mid);
+  }
+  .survey-option.selected .radio::after {
+    content: '';
+    width: 5px; height: 5px;
+    background: white;
+    border-radius: 50%;
+  }
+  .chart-bar {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 6px;
+    font-size: 10px;
+  }
+  .chart-label { width: 80px; color: #444; flex-shrink: 0; }
+  .chart-track {
+    flex: 1; height: 14px; background: #eee;
+    border-radius: 7px; overflow: hidden;
+  }
+  .chart-fill { height: 100%; border-radius: 7px; background: var(--blue-mid); }
+  .chart-pct { width: 28px; color: var(--blue-dark); font-weight: bold; }
+
+  /* Fact check */
+  .fact-item {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .fact-badge {
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .fact-badge.green { background: #E8F5E9; color: #2E7D32; }
+  .fact-badge.yellow { background: #FFF9C4; color: #F57F17; }
+  .fact-badge.red { background: #FFEBEE; color: #C62828; }
+  .fact-text .quote { font-size: 11px; font-weight: bold; color: #222; line-height: 1.4; }
+  .fact-text .source { font-size: 9px; color: var(--gray-text); margin-top: 3px; }
+
+  /* Profile detail */
+  .profile-section { padding: 10px 14px; border-bottom: 1px solid #f0f0f0; }
+  .profile-section h4 { font-size: 12px; color: var(--blue-dark); font-weight: bold; margin-bottom: 6px; }
+  .timeline-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    margin-bottom: 8px;
+    font-size: 11px;
+  }
+  .timeline-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--blue-mid);
+    margin-top: 3px; flex-shrink: 0;
+  }
+  .timeline-year { color: var(--gray-text); width: 36px; flex-shrink: 0; }
+  .timeline-desc { color: #333; }
+
+  /* Policy detail screen */
+  .policy-hero {
+    padding: 16px 14px;
+    display: flex; gap: 12px; align-items: center;
+  }
+  .policy-hero-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .policy-hero-text .title { font-size: 15px; font-weight: bold; color: white; }
+  .policy-hero-text .sub { font-size: 11px; color: rgba(255,255,255,.8); margin-top: 3px; }
+  .detail-block { background: white; margin: 8px; border-radius: 12px; padding: 12px 14px; }
+  .detail-block h4 { font-size: 12px; color: var(--accent); font-weight: bold; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .detail-block p { font-size: 11px; color: #444; line-height: 1.6; }
+  .roadmap-step {
+    display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px;
+  }
+  .roadmap-circle {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--blue-mid); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: bold; flex-shrink: 0;
+  }
+  .roadmap-text .step-title { font-size: 11px; font-weight: bold; color: #222; }
+  .roadmap-text .step-sub { font-size: 10px; color: var(--gray-text); }
+  .rating-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .rating-stars { display: flex; gap: 4px; }
+  .star { font-size: 22px; color: #ddd; cursor: pointer; }
+  .star.active { color: #FFC107; }
+  .submit-btn {
+    background: var(--blue-dark);
+    color: white; border: none;
+    border-radius: 8px; padding: 8px 14px;
+    font-size: 11px; cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* Notifications */
+  .notif-item {
+    display: flex; gap: 10px; padding: 10px 14px;
+    border-bottom: 1px solid #f0f0f0; align-items: flex-start;
+  }
+  .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-top: 4px; flex-shrink: 0; }
+  .notif-text .title { font-size: 11px; font-weight: bold; color: #222; }
+  .notif-text .time { font-size: 9px; color: var(--gray-text); margin-top: 2px; }
+  .countdown-box {
+    background: var(--blue-dark);
+    margin: 8px;
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+  }
+  .countdown-box .label { color: rgba(255,255,255,.7); font-size: 11px; }
+  .countdown-box .days { color: white; font-size: 36px; font-weight: bold; }
+  .countdown-box .sub { color: rgba(255,255,255,.7); font-size: 10px; margin-top: 2px; }
+  .dday-accent { color: var(--accent); }
+
+  /* Toggle switch */
+  .toggle-row {
+    display: flex; align-items: center; padding: 10px 14px;
+    border-bottom: 1px solid #f0f0f0; gap: 10px;
+  }
+  .toggle-label { flex: 1; font-size: 12px; color: #222; }
+  .toggle {
+    width: 36px; height: 20px; border-radius: 10px;
+    position: relative; cursor: pointer;
+  }
+  .toggle.on { background: var(--blue-mid); }
+  .toggle.off { background: #ccc; }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 16px; height: 16px; border-radius: 50%; background: white;
+    top: 2px; transition: .2s;
+  }
+  .toggle.on::after { left: calc(100% - 18px); }
+  .toggle.off::after { left: 2px; }
+
+  /* Map placeholder */
+  .map-placeholder {
+    background: #C8DBC8;
+    height: 100px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    margin: 8px;
+    border-radius: 12px;
+    color: #5A7A5A;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  /* Chip */
+  .chip {
+    display: inline-block;
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 10px;
+    margin: 2px;
+  }
+  .chip.accent { background: #FFF0D6; color: #B35900; }
+
+  /* Skeleton loader example */
+  .skeleton {
+    background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    border-radius: 6px;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* All screens grid */
+  .all-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+  }
+  .phone-label {
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--blue-dark);
+    margin-bottom: 8px;
+  }
+
+  /* Annotation callout */
+  .annotations {
+    max-width: 320px;
+    margin-top: 12px;
+  }
+  .ann {
+    font-size: 10px;
+    color: var(--gray-text);
+    padding: 3px 0;
+    border-left: 3px solid var(--blue-mid);
+    padding-left: 8px;
+    margin-bottom: 4px;
+  }
+  .ann strong { color: var(--blue-dark); }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">🏝 김태성 선거앱 — Flutter 와이어프레임</h1>
+<p class="subtitle">클릭하여 각 화면을 확인하세요 &nbsp;·&nbsp; 실제 Flutter 구현 기준 화면 설계</p>
+
+<!-- Tab nav -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('all')">전체 보기</button>
+  <button class="tab-btn" onclick="showTab('home')">① 프로필 (홈)</button>
+  <button class="tab-btn" onclick="showTab('policy-list')">② 정책 목록</button>
+  <button class="tab-btn" onclick="showTab('policy-detail')">② 정책 상세</button>
+  <button class="tab-btn" onclick="showTab('news')">③ 뉴스피드</button>
+  <button class="tab-btn" onclick="showTab('contact')">④ 직접연락</button>
+  <button class="tab-btn" onclick="showTab('survey')">⑤ 설문</button>
+  <button class="tab-btn" onclick="showTab('factcheck')">⑥ 팩트체크</button>
+</div>
+
+<div class="all-grid" id="screenGrid">
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- SCREEN 1: PROFILE (HOME) -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="screen-wrapper visible" id="sw-home">
+    <div class="phone-label">① 정치인 프로필 (홈/랜딩)</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+      <!-- Hero -->
+      <div class="hero">
+        <div class="candidate-img">👤</div>
+        <div class="candidate-name">김태성</div>
+        <div class="candidate-sub">신안군수 예비후보 · 전라남도 신안군</div>
+        <div class="badge">신안군수 예비후보</div>
+      </div>
+      <div class="scroll-content">
+        <!-- SNS -->
+        <div class="section">
+          <div class="section-title">🔗 SNS &amp; 공식 채널</div>
+          <div style="display:flex; gap:12px; padding:10px 14px;">
+            <div style="text-align:center; font-size:9px; color:var(--gray-text)"><div style="font-size:22px;">📘</div>Facebook</div>
+            <div style="text-align:center; font-size:9px; color:var(--gray-text)"><div style="font-size:22px;">📸</div>Instagram</div>
+            <div style="text-align:center; font-size:9px; color:var(--gray-text)"><div style="font-size:22px;">▶️</div>YouTube</div>
+            <div style="text-align:center; font-size:9px; color:var(--gray-text)"><div style="font-size:22px;">💬</div>카카오톡</div>
+          </div>
+        </div>
+        <!-- Career Timeline -->
+        <div class="section">
+          <div class="section-title">📋 주요 경력</div>
+          <div class="profile-section">
+            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">2022</div><div class="timeline-desc">前 신안군청 행정 담당</div></div>
+            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">2019</div><div class="timeline-desc">지역 관광 위원회 위원</div></div>
+            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-year">2015</div><div class="timeline-desc">신안 어촌계 자문위원</div></div>
+          </div>
+        </div>
+        <!-- Quick policy -->
+        <div class="section">
+          <div class="section-title">📌 핵심 정책 <span class="see-all">모두 보기 &rsaquo;</span></div>
+          <div style="padding:8px 14px; display:flex; flex-wrap:wrap; gap:4px;">
+            <span class="chip">🏝 섬 관광</span>
+            <span class="chip">💰 소득 증대</span>
+            <span class="chip">🏛 공정 행정</span>
+            <span class="chip">🤝 열린 군정</span>
+            <span class="chip">📞 민원 ZERO</span>
+            <span class="chip">❤️ 복지 해피100</span>
+          </div>
+        </div>
+        <div style="height:12px;"></div>
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-item active"><div class="nav-icon">👤</div>프로필</div>
+        <div class="nav-item"><div class="nav-icon">📋</div>정책</div>
+        <div class="nav-item"><div class="nav-icon">📰</div>뉴스</div>
+        <div class="nav-item"><div class="nav-icon">💬</div>소통</div>
+        <div class="nav-item"><div class="nav-icon">🔔</div>알림</div>
+      </div>
+    </div>
+    <div class="annotations">
+      <div class="ann"><strong>랜딩 페이지:</strong> 앱 실행 시 가장 먼저 표시</div>
+      <div class="ann"><strong>오프라인 캐시:</strong> Hive로 프로필 데이터 로컬 저장</div>
+      <div class="ann"><strong>SNS 버튼:</strong> url_launcher로 외부 앱 열기</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- SCREEN 2: POLICY LIST -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="screen-wrapper visible" id="sw-policy-list">
+    <div class="phone-label">② 정책 소개 목록 ★핵심</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="app-bar">
+        <div class="title">📋 김태성 6대 공약</div>
+      </div>
+      <div class="scroll-content" style="background:white;">
+        <div style="padding:8px 14px; background:var(--blue-light); font-size:11px; color:var(--blue-dark);">
+          "신안의 미래, 함께 만들겠습니다" — 각 공약을 눌러 자세히 보세요
+        </div>
+        <div class="policy-card">
+          <div class="policy-icon" style="background:#E3F2FD;">🏝</div>
+          <div class="policy-card-text">
+            <div class="title">관광 비전 — 섬 전체가 하나의 작품</div>
+            <div class="sub">섬별 특화 콘텐츠 · 신안 관광 네트워크</div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+        <div class="policy-card">
+          <div class="policy-icon" style="background:#FFF9C4;">💰</div>
+          <div class="policy-card-text">
+            <div class="title">경제 — 군민의 지갑이 두꺼워지는 신안</div>
+            <div class="sub">농수산물 유통 개선 · 주민 소득 증대</div>
+            <div class="stars">★★★★☆</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+        <div class="policy-card">
+          <div class="policy-icon" style="background:#E8EAF6;">🏛</div>
+          <div class="policy-card-text">
+            <div class="title">공직자 3대 공약 — 공정하고 존중받는 행정</div>
+            <div class="sub">공무원 권한 회복 · 공정 인사 원칙</div>
+            <div class="stars">★★★★☆</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+        <div class="policy-card">
+          <div class="policy-icon" style="background:#E8F5E9;">🤝</div>
+          <div class="policy-card-text">
+            <div class="title">열린 군정 — 군민이 주인인 신안</div>
+            <div class="sub">계획·실행·평가 전 단계 군민 참여</div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+        <div class="policy-card">
+          <div class="policy-icon" style="background:#FFF3E0;">📞</div>
+          <div class="policy-card-text">
+            <div class="title">주민불편 ZERO 프로젝트</div>
+            <div class="sub">24시간 민원 응답 · 즉각 현장 출동</div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+        <div class="policy-card">
+          <div class="policy-icon" style="background:#FCE4EC;">❤️</div>
+          <div class="policy-card-text">
+            <div class="title">해피100 복지 — 모든 군민이 편안한 신안</div>
+            <div class="sub">주거·의료·교육·돌봄 통합 복지</div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-item"><div class="nav-icon">👤</div>프로필</div>
+        <div class="nav-item active"><div class="nav-icon">📋</div>정책</div>
+        <div class="nav-item"><div class="nav-icon">📰</div>뉴스</div>
+        <div class="nav-item"><div class="nav-icon">💬</div>소통</div>
+        <div class="nav-item"><div class="nav-icon">🔔</div>알림</div>
+      </div>
+    </div>
+    <div class="annotations">
+      <div class="ann"><strong>★핵심 화면:</strong> P0 — 앱의 중심 콘텐츠</div>
+      <div class="ann"><strong>별점:</strong> 유권자 실시간 평가 (Firestore 집계)</div>
+      <div class="ann"><strong>카드 탭:</strong> 정책 상세 화면으로 Navigator.push</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- SCREEN 3: POLICY DETAIL -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="screen-wrapper visible" id="sw-policy-detail">
+    <div class="phone-label">② 정책 상세 — 관광 비전</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+      <div style="background:linear-gradient(135deg,#1B3A6B,#2E6DB4);">
+        <div class="app-bar" style="background:transparent;">
+          <div class="back-btn">←</div>
+          <div class="title">정책 상세</div>
+          <div class="action">공유</div>
+        </div>
+        <div class="policy-hero">
+          <div class="policy-hero-icon" style="background:rgba(255,255,255,.2);">🏝</div>
+          <div class="policy-hero-text">
+            <div class="title">관광 비전</div>
+            <div class="sub">섬 전체가 하나의 작품이 됩니다</div>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-content">
+        <div class="detail-block">
+          <h4>📌 정책 배경</h4>
+          <p>신안군은 1,025개 섬으로 이루어진 대한민국 최대 도서 지역입니다. 각 섬의 고유한 자연·문화 자원을 체계적으로 관광 콘텐츠화하여 지역 경제를 활성화합니다.</p>
+        </div>
+        <div class="detail-block">
+          <h4>🎯 3대 추진 전략</h4>
+          <div class="roadmap-step">
+            <div class="roadmap-circle">1</div>
+            <div class="roadmap-text"><div class="step-title">섬별 특화 콘텐츠 개발</div><div class="step-sub">자연·문화·생활 기반 차별화</div></div>
+          </div>
+          <div class="roadmap-step">
+            <div class="roadmap-circle">2</div>
+            <div class="roadmap-text"><div class="step-title">생활이 관광이 되는 구조</div><div class="step-sub">주민 삶 → 관광 자원 확장</div></div>
+          </div>
+          <div class="roadmap-step">
+            <div class="roadmap-circle">3</div>
+            <div class="roadmap-text"><div class="step-title">신안 전체 관광 네트워크</div><div class="step-sub">섬 접근성·통합 관광 경험</div></div>
+          </div>
+        </div>
+        <div class="detail-block">
+          <h4>⭐ 이 정책을 평가해주세요</h4>
+          <div class="rating-row">
+            <div class="rating-stars">
+              <span class="star active">★</span>
+              <span class="star active">★</span>
+              <span class="star active">★</span>
+              <span class="star active">★</span>
+              <span class="star">★</span>
+            </div>
+            <button class="submit-btn">평가 제출</button>
+          </div>
+          <div style="font-size:10px; color:var(--gray-text); margin-top:6px;">※ 익명으로 수집됩니다</div>
+        </div>
+        <div style="height:12px;"></div>
+      </div>
+      <div style="background:white; border-top:1px solid var(--border); padding:8px 14px; display:flex; gap:8px;">
+        <button style="flex:1; background:var(--blue-light); color:var(--blue-dark); border:none; border-radius:8px; padding:10px; font-size:12px; font-family:inherit; font-weight:bold; cursor:pointer;">📤 공유하기</button>
+        <button style="flex:1; background:var(--blue-dark); color:white; border:none; border-radius:8px; padding:10px; font-size:12px; font-family:inherit; font-weight:bold; cursor:pointer;">💬 의견 남기기</button>
+      </div>
+    </div>
+    <div class="annotations">
+      <div class="ann"><strong>Hero 그라데이션:</strong> 정책별 고유 색상 적용</div>
+      <div class="ann"><strong>로드맵:</strong> 타임라인 위젯으로 구현</div>
+      <div class="ann"><strong>별점:</strong> 익명 해시 ID로 중복 방지</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- SCREEN 4: NEWS FEED -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="screen-wrapper visible" id="sw-news">
+    <div class="phone-label">③ 뉴스 피드</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="app-bar"><div class="title">📰 최신 뉴스</div></div>
+      <!-- Category chips -->
+      <div style="background:white; padding:8px 14px; display:flex; gap:6px; overflow-x:auto; border-bottom:1px solid var(--border); flex-shrink:0;">
+        <span class="chip accent">전체</span>
+        <span class="chip">정책</span>
+        <span class="chip">인터뷰</span>
+        <span class="chip">보도자료</span>
+        <span class="chip">지역</span>
+      </div>
+      <div class="scroll-content" style="background:white;">
+        <div class="news-card">
+          <div class="news-thumb">🏝</div>
+          <div class="news-text">
+            <div class="headline">김태성 예비후보 "신안 모든 섬을 살아있는 관광지로" 비전 발표</div>
+            <div class="meta">무등일보 · 2시간 전</div>
+          </div>
+        </div>
+        <div class="news-card">
+          <div class="news-thumb">💰</div>
+          <div class="news-text">
+            <div class="headline">신안 어민 소득 30% 향상, 유통구조 개혁 공약 상세 내용은?</div>
+            <div class="meta">신안타임즈 · 4시간 전</div>
+          </div>
+        </div>
+        <div class="news-card">
+          <div class="news-thumb">🗳</div>
+          <div class="news-text">
+            <div class="headline">지역 여론조사 — 신안군수 지지율 최신 결과</div>
+            <div class="meta">KBC광주방송 · 어제</div>
+          </div>
+        </div>
+        <!-- Skeleton loader -->
+        <div style="padding:10px 14px; display:flex; gap:10px; border-bottom:1px solid #f0f0f0;">
+          <div class="skeleton" style="width:56px; height:46px; border-radius:8px;"></div>
+          <div style="flex:1;">
+            <div class="skeleton" style="height:11px; width:90%; margin-bottom:5px;"></div>
+            <div class="skeleton" style="height:11px; width:70%; margin-bottom:5px;"></div>
+            <div class="skeleton" style="height:9px; width:40%;"></div>
+          </div>
+        </div>
+        <div style="padding:10px 14px; display:flex; gap:10px; border-bottom:1px solid #f0f0f0;">
+          <div class="skeleton" style="width:56px; height:46px; border-radius:8px;"></div>
+          <div style="flex:1;">
+            <div class="skeleton" style="height:11px; width:85%; margin-bottom:5px;"></div>
+            <div class="skeleton" style="height:9px; width:45%;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-item"><div class="nav-icon">👤</div>프로필</div>
+        <div class="nav-item"><div class="nav-icon">📋</div>정책</div>
+        <div class="nav-item active"><div class="nav-icon">📰</div>뉴스</div>
+        <div class="nav-item"><div class="nav-icon">💬</div>소통</div>
+        <div class="nav-item"><div class="nav-icon">🔔</div>알림</div>
+      </div>
+    </div>
+    <div class="annotations">
+      <div class="ann"><strong>RSS 수집:</strong> Dio로 뉴스 API / RSS 파싱</div>
+      <div class="ann"><strong>스켈레톤:</strong> shimmer 패키지 로딩 UX</div>
+      <div class="ann"><strong>카테고리:</strong> SingleChildScrollView + FilterChip</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- SCREEN 5: CONTACT -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="screen-wrapper visible" id="sw-contact">
+    <div class="phone-label">④ 직접 연락</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="app-bar"><div class="title">💬 직접 연락</div></div>
+      <div class="scroll-content">
+        <div class="section">
+          <div class="section-title">📞 직통 연락처</div>
+          <div class="contact-btn">
+            <div class="contact-icon" style="background:#E3F2FD;">📞</div>
+            <div><div class="label">전화</div><div class="val">061-XXX-XXXX</div></div>
+            <div class="ext">↗</div>
+          </div>
+          <div class="contact-btn">
+            <div class="contact-icon" style="background:#E8F5E9;">✉️</div>
+            <div><div class="label">이메일</div><div class="val">kimts@sinanjuso.com</div></div>
+            <div class="ext">↗</div>
+          </div>
+          <div class="contact-btn">
+            <div class="contact-icon" style="background:#FFF9C4;">💬</div>
+            <div><div class="label">카카오톡 채널</div><div class="val">@김태성신안군수</div></div>
+            <div class="ext">↗</div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-title">🗺 선거 캠프 위치</div>
+          <div class="map-placeholder">
+            🗺 지도 (Google Maps Flutter Plugin)
+          </div>
+          <div style="padding:8px 14px; font-size:10px; color:var(--gray-text);">전라남도 신안군 안좌면 읍내리 캠프 사무소</div>
+        </div>
+        <div class="section">
+          <div class="section-title">📬 문의 유형 선택</div>
+          <div style="padding:10px 14px; display:flex; flex-wrap:wrap; gap:6px;">
+            <span class="chip accent" style="cursor:pointer;">정책 의견</span>
+            <span class="chip" style="cursor:pointer;">민원 신고</span>
+            <span class="chip" style="cursor:pointer;">자원봉사</span>
+            <span class="chip" style="cursor:pointer;">취재 문의</span>
+          </div>
+          <div style="margin:0 14px 12px;">
+            <div style="background:var(--gray-bg); border-radius:8px; padding:10px; font-size:11px; color:var(--gray-text); border:1px solid var(--border);">의견을 입력하세요... (500자 이내)</div>
+            <button style="width:100%; margin-top:8px; background:var(--blue-dark); color:white; border:none; border-radius:8px; padding:10px; font-size:12px; font-family:inherit; cursor:pointer; font-weight:bold;">제출하기</button>
+          </div>
+        </div>
+        <div style="height:12px;"></div>
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-item"><div class="nav-icon">👤</div>프로필</div>
+        <div class="nav-item"><div class="nav-icon">📋</div>정책</div>
+        <div class="nav-item"><div class="nav-icon">📰</div>뉴스</div>
+        <div class="nav-item active"><div class="nav-icon">💬</div>소통</div>
+        <div class="nav-item"><div class="nav-icon">🔔</div>알림</div>
+      </div>
+    </div>
+    <div class="annotations">
+      <div class="ann"><strong>외부 링크:</strong> url_launcher — 전화·이메일·카카오</div>
+      <div class="ann"><strong>지도:</strong> google_maps_flutter + 캠프 좌표</div>
+      <div class="ann"><strong>UGC 필터:</strong> 의견 제출 시 금칙어 검사</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- SCREEN 6: SURVEY -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="screen-wrapper visible" id="sw-survey">
+    <div class="phone-label">⑤ 설문 및 투표</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="app-bar"><div class="title">🗳 군민 설문</div></div>
+      <div class="scroll-content">
+        <!-- Active survey -->
+        <div class="survey-card">
+          <div class="survey-q">Q1. 신안군에서 가장 시급히 해결해야 할 문제는 무엇이라고 생각하십니까?</div>
+          <div class="survey-options">
+            <div class="survey-option selected">
+              <div class="radio"></div>
+              주민 생활 편의 (의료·교통)
+            </div>
+            <div class="survey-option">
+              <div class="radio"></div>
+              지역 경제 활성화
+            </div>
+            <div class="survey-option">
+              <div class="radio"></div>
+              관광 인프라 개선
+            </div>
+            <div class="survey-option">
+              <div class="radio"></div>
+              복지·돌봄 서비스
+            </div>
+          </div>
+          <div style="margin-top:10px; font-size:10px; color:var(--gray-text);">※ 익명 참여 · 개인정보 수집 없음</div>
+        </div>
+        <!-- Results -->
+        <div class="section">
+          <div class="section-title">📊 실시간 집계 결과 <span class="see-all">1,247명 참여</span></div>
+          <div style="padding:10px 14px;">
+            <div class="chart-bar"><div class="chart-label">생활 편의</div><div class="chart-track"><div class="chart-fill" style="width:72%;"></div></div><div class="chart-pct">72%</div></div>
+            <div class="chart-bar"><div class="chart-label">지역 경제</div><div class="chart-track"><div class="chart-fill" style="width:55%;"></div></div><div class="chart-pct">55%</div></div>
+            <div class="chart-bar"><div class="chart-label">관광 인프라</div><div class="chart-track"><div class="chart-fill" style="width:38%;"></div></div><div class="chart-pct">38%</div></div>
+            <div class="chart-bar"><div class="chart-label">복지·돌봄</div><div class="chart-track"><div class="chart-fill" style="width:45%;"></div></div><div class="chart-pct">45%</div></div>
+          </div>
+        </div>
+        <div style="padding:0 8px 8px;">
+          <button style="width:100%; background:var(--accent); color:white; border:none; border-radius:8px; padding:12px; font-size:13px; font-family:inherit; font-weight:bold; cursor:pointer;">✅ 의견 제출 &amp; 후보에게 전달</button>
+        </div>
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-item"><div class="nav-icon">👤</div>프로필</div>
+        <div class="nav-item"><div class="nav-icon">📋</div>정책</div>
+        <div class="nav-item"><div class="nav-icon">📰</div>뉴스</div>
+        <div class="nav-item active"><div class="nav-icon">💬</div>소통</div>
+        <div class="nav-item"><div class="nav-icon">🔔</div>알림</div>
+      </div>
+    </div>
+    <div class="annotations">
+      <div class="ann"><strong>익명 ID:</strong> sha256(deviceId + surveyId)</div>
+      <div class="ann"><strong>실시간 집계:</strong> StreamBuilder + Firestore</div>
+      <div class="ann"><strong>중복 방지:</strong> Firestore 문서 ID로 1인 1투표</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════ -->
+  <!-- SCREEN 7: FACT CHECK + NOTIFICATIONS -->
+  <!-- ══════════════════════════════════════════════ -->
+  <div class="screen-wrapper visible" id="sw-factcheck">
+    <div class="phone-label">⑥ 팩트체크 &amp; 알림</div>
+    <div class="phone">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+      <div class="app-bar"><div class="title">🔔 알림 &amp; 팩트체크</div></div>
+      <div class="scroll-content">
+        <!-- D-Day countdown -->
+        <div class="countdown-box">
+          <div class="label">⏰ 지방선거까지</div>
+          <div class="days"><span class="dday-accent">D</span>-42</div>
+          <div class="sub">2026년 6월 3일 (수) · 제8회 전국동시지방선거</div>
+        </div>
+        <!-- Notifications -->
+        <div class="section">
+          <div class="section-title">📢 주요 알림</div>
+          <div class="notif-item">
+            <div class="notif-dot"></div>
+            <div class="notif-text"><div class="title">🗳 오늘 팔금면 주민 간담회 — 오후 3시</div><div class="time">방금</div></div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-dot" style="background:var(--blue-mid);"></div>
+            <div class="notif-text"><div class="title">📋 해피100 복지 정책 상세 발표</div><div class="time">1시간 전</div></div>
+          </div>
+          <div class="notif-item">
+            <div class="notif-dot" style="background:#ccc;"></div>
+            <div class="notif-text"><div class="title">📰 신안타임즈 인터뷰 기사 게재</div><div class="time">어제</div></div>
+          </div>
+        </div>
+        <!-- Fact check -->
+        <div class="section">
+          <div class="section-title">✅ 팩트체크</div>
+          <div class="fact-item">
+            <span class="fact-badge green">사실</span>
+            <div class="fact-text">
+              <div class="quote">"신안군 섬은 총 1,025개"</div>
+              <div class="source">출처: 신안군청 공식 통계 2025</div>
+            </div>
+          </div>
+          <div class="fact-item">
+            <span class="fact-badge yellow">확인 중</span>
+            <div class="fact-text">
+              <div class="quote">"어민 소득 30% 증가 가능"</div>
+              <div class="source">출처: 공약집 — 근거 자료 검토 중</div>
+            </div>
+          </div>
+          <div class="fact-item">
+            <span class="fact-badge green">사실</span>
+            <div class="fact-text">
+              <div class="quote">"24시간 민원 응답 시스템 계획"</div>
+              <div class="source">출처: 2026.4.11 팔금면 공약 발표</div>
+            </div>
+          </div>
+        </div>
+        <!-- Notification settings -->
+        <div class="section">
+          <div class="section-title">⚙️ 알림 설정</div>
+          <div class="toggle-row"><div class="toggle-label">유세 일정 알림</div><div class="toggle on"></div></div>
+          <div class="toggle-row"><div class="toggle-label">정책 발표 알림</div><div class="toggle on"></div></div>
+          <div class="toggle-row"><div class="toggle-label">뉴스 알림</div><div class="toggle off"></div></div>
+          <div class="toggle-row"><div class="toggle-label">선거일 D-Day 알림</div><div class="toggle on"></div></div>
+        </div>
+        <div style="height:12px;"></div>
+      </div>
+      <div class="bottom-nav">
+        <div class="nav-item"><div class="nav-icon">👤</div>프로필</div>
+        <div class="nav-item"><div class="nav-icon">📋</div>정책</div>
+        <div class="nav-item"><div class="nav-icon">📰</div>뉴스</div>
+        <div class="nav-item"><div class="nav-icon">💬</div>소통</div>
+        <div class="nav-item active"><div class="nav-icon">🔔</div>알림</div>
+      </div>
+    </div>
+    <div class="annotations">
+      <div class="ann"><strong>D-Day:</strong> 선거일까지 자동 계산 위젯</div>
+      <div class="ann"><strong>팩트체크:</strong> GREEN/YELLOW/RED 배지 시스템</div>
+      <div class="ann"><strong>알림 토글:</strong> SharedPreferences + FCM 토픽</div>
+    </div>
+  </div>
+
+</div><!-- /all-grid -->
+
+<div style="text-align:center; margin-top:40px; padding:20px; color:var(--gray-text); font-size:11px; border-top:1px solid var(--border);">
+  김태성 신안군수 예비후보 공식 선거앱 — Flutter 와이어프레임 v1.0<br>
+  대외비 · 캠프 내부용 · 2026.04.16
+</div>
+
+<script>
+  function showTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+
+    const map = {
+      'all': ['sw-home','sw-policy-list','sw-policy-detail','sw-news','sw-contact','sw-survey','sw-factcheck'],
+      'home': ['sw-home'],
+      'policy-list': ['sw-policy-list'],
+      'policy-detail': ['sw-policy-detail'],
+      'news': ['sw-news'],
+      'contact': ['sw-contact'],
+      'survey': ['sw-survey'],
+      'factcheck': ['sw-factcheck'],
+    };
+    document.querySelectorAll('.screen-wrapper').forEach(el => el.classList.remove('visible'));
+    (map[tab] || []).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('visible');
+    });
+  }
+</script>
+</body>
+</html>

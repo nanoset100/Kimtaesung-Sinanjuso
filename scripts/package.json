@@ -1,0 +1,15 @@
+{
+  "name": "sinanjuso-scripts",
+  "version": "1.0.0",
+  "description": "김태성 신안군수 앱 — Firebase 관리 스크립트",
+  "scripts": {
+    "seed": "node seed_policies.js",
+    "seed:policies": "node seed_policies.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
