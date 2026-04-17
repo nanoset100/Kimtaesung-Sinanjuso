@@ -10,10 +10,12 @@ platform :ios do
       key_content: ENV["APP_STORE_CONNECT_PRIVATE_KEY"],
     )
 
-    # 배포 인증서 자동 다운로드 / 없으면 생성
+    # 배포 인증서: 기존 인증서 취소 후 새로 생성 (매 빌드마다 fresh)
+    # force: true → 한도 초과 문제 방지
     get_certificates(
       api_key: api_key,
-      output_path: "/tmp/certs"
+      output_path: "/tmp/certs",
+      force: true
     )
 
     # 프로비저닝 프로파일 자동 다운로드 / 없으면 생성
