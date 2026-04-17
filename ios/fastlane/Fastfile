@@ -28,9 +28,7 @@ platform :ios do
     profile_name = lane_context[SharedValues::SIGH_NAME]
     UI.message("Using profile: #{profile_name}")
 
-    # Flutter iOS 빌드 (코드사이닝 없이 컴파일만)
-    sh("cd .. && flutter build ios --release --no-codesign")
-
+    # flutter build ios --no-codesign 은 workflow에서 이미 실행됨
     # Xcode 아카이브 + 코드사이닝 + IPA 생성
     build_app(
       workspace: "../ios/Runner.xcworkspace",

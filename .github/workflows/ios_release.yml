@@ -35,7 +35,10 @@ jobs:
       - name: Pod install
         run: cd ios && pod install --repo-update
 
-      - name: Build & Upload to TestFlight
+      - name: Flutter build iOS (코드사이닝 없이)
+        run: flutter build ios --release --no-codesign
+
+      - name: 코드사이닝 & TestFlight 업로드 (Fastlane)
         env:
           APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
