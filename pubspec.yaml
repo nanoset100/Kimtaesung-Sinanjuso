@@ -1,8 +1,8 @@
 name: sinanjuso
-description: "김태성 신안군수 예비후보 공식 선거앱"
+description: "신안의 미래를 위한 정책 제안 및 공약 확인 플랫폼입니다."
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.1+3
 
 environment:
   sdk: ^3.8.1
