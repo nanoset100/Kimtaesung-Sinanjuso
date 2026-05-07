@@ -2,7 +2,7 @@ class AppStrings {
   AppStrings._();
 
   // 앱 기본
-  static const String appName = '김태성과 신안';
+  static const String appName = '신안 정책 플랫폼 - 신안의 희망';
   static const String candidateName = '김태성';
   static const String candidateTitle = '신안군수 예비후보';
   static const String slogan = '신안의 모든 공간을 살아있는 관광 콘텐츠로 바꾸겠습니다';
@@ -16,7 +16,7 @@ class AppStrings {
 
   // 정책 화면
   static const String policyTitle = '6대 핵심 정책';
-  static const String policySubtitle = '신안을 바꿀 김태성의 약속';
+  static const String policySubtitle = '신안의 미래를 위한 정책 제안 및 공약 확인 플랫폼입니다.';
 
   // 6대 정책명
   static const String policy1 = '관광 비전';

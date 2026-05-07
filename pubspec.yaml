@@ -2,7 +2,7 @@ name: sinanjuso
 description: "신안의 미래를 위한 정책 제안 및 공약 확인 플랫폼입니다."
 publish_to: 'none'
 
-version: 1.0.2+4
+version: 1.0.3+5
 
 environment:
   sdk: ^3.8.1

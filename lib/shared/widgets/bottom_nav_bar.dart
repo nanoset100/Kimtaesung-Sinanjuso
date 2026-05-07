@@ -13,36 +13,54 @@ class AppBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NavigationBar(
-      selectedIndex: currentIndex,
-      onDestinationSelected: onTap,
-      destinations: const [
-        NavigationDestination(
-          icon: Icon(Icons.person_outline),
-          selectedIcon: Icon(Icons.person),
-          label: AppStrings.navProfile,
+    return Theme(
+      data: Theme.of(context).copyWith(
+        navigationBarTheme: NavigationBarThemeData(
+          labelTextStyle: MaterialStateProperty.all(
+            const TextStyle(
+              color: Color(0xFF1B3A6B),
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          iconTheme: MaterialStateProperty.all(
+            const IconThemeData(
+              color: Color(0xFF1B3A6B),
+            ),
+          ),
         ),
-        NavigationDestination(
-          icon: Icon(Icons.assignment_outlined),
-          selectedIcon: Icon(Icons.assignment),
-          label: AppStrings.navPolicy,
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.newspaper_outlined),
-          selectedIcon: Icon(Icons.newspaper),
-          label: AppStrings.navNews,
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.chat_bubble_outline),
-          selectedIcon: Icon(Icons.chat_bubble),
-          label: AppStrings.navContact,
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.notifications_outlined),
-          selectedIcon: Icon(Icons.notifications),
-          label: AppStrings.navNotification,
-        ),
-      ],
+      ),
+      child: NavigationBar(
+        selectedIndex: currentIndex,
+        onDestinationSelected: onTap,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: AppStrings.navProfile,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.assignment_outlined),
+            selectedIcon: Icon(Icons.assignment),
+            label: AppStrings.navPolicy,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.newspaper_outlined),
+            selectedIcon: Icon(Icons.newspaper),
+            label: AppStrings.navNews,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.chat_bubble_outline),
+            selectedIcon: Icon(Icons.chat_bubble),
+            label: AppStrings.navContact,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.notifications_outlined),
+            selectedIcon: Icon(Icons.notifications),
+            label: AppStrings.navNotification,
+          ),
+        ],
+      ),
     );
   }
 }

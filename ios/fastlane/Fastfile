@@ -3,56 +3,19 @@ default_platform(:ios)
 platform :ios do
   desc "TestFlight 업로드"
   lane :beta do
-    # App Store Connect API 키 설정
     api_key = app_store_connect_api_key(
       key_id: ENV["APP_STORE_CONNECT_KEY_ID"],
       issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
       key_content: ENV["APP_STORE_CONNECT_PRIVATE_KEY"],
     )
 
-    # 배포 인증서: 기존 인증서 취소 후 새로 생성 (매 빌드마다 fresh)
-    # force: true → 한도 초과 문제 방지
-    get_certificates(
-      api_key: api_key,
-      output_path: "/tmp/certs",
-      force: true
-    )
+    ipa_path = Dir["../build/ios/ipa/*.ipa"].first
+    UI.user_error!("IPA 파일을 찾을 수 없습니다") if ipa_path.nil?
+    UI.message("업로드할 IPA: #{ipa_path}")
 
-    # 프로비저닝 프로파일 자동 다운로드 / 없으면 생성
-    get_provisioning_profile(
-      api_key: api_key,
-      app_identifier: "com.kimtaesung.sinanjuso",
-      output_path: "/tmp/profiles"
-    )
-
-    profile_name = lane_context[SharedValues::SIGH_NAME]
-    UI.message("Using profile: #{profile_name}")
-
-    # flutter build ios --no-codesign 은 workflow에서 이미 실행됨
-    # Xcode 아카이브 + 코드사이닝 + IPA 생성
-    build_app(
-      workspace: "../ios/Runner.xcworkspace",
-      scheme: "Runner",
-      export_method: "app-store",
-      export_options: {
-        teamID: ENV["APPLE_TEAM_ID"],
-        provisioningProfiles: {
-          "com.kimtaesung.sinanjuso" => profile_name
-        },
-        uploadBitcode: false,
-        uploadSymbols: true,
-        compileBitcode: false
-      },
-      output_directory: "../build/ios/ipa",
-      output_name: "sinanjuso.ipa",
-      silent: false,
-      clean: false
-    )
-
-    # TestFlight 업로드
     upload_to_testflight(
       api_key: api_key,
-      ipa: "../build/ios/ipa/sinanjuso.ipa",
+      ipa: ipa_path,
       skip_waiting_for_build_processing: true
     )
 

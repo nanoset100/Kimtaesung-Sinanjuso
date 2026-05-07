@@ -58,7 +58,19 @@
       "mcp__chrome-devtools__evaluate_script",
       "Bash(powershell -ExecutionPolicy Bypass -File \"M:\\\\MyProject777\\\\kimtaesung_sinanjuso\\\\resize_ios.ps1\")",
       "Bash(powershell -ExecutionPolicy Bypass -File \"M:\\\\MyProject777\\\\kimtaesung_sinanjuso\\\\resize_ios2.ps1\")",
-      "Bash(powershell -ExecutionPolicy Bypass -File \"M:\\\\MyProject777\\\\kimtaesung_sinanjuso\\\\resize_ios_final.ps1\")"
+      "Bash(powershell -ExecutionPolicy Bypass -File \"M:\\\\MyProject777\\\\kimtaesung_sinanjuso\\\\resize_ios_final.ps1\")",
+      "Bash(dir M:\\\\MyProject777\\\\kimtaesung_sinanjuso\\\\ios)",
+      "Bash(powershell -ExecutionPolicy Bypass -File \"M:\\\\MyProject777\\\\kimtaesung_sinanjuso\\\\assets\\\\images\\\\create_ipad_screenshots.ps1\")",
+      "Bash(powershell -ExecutionPolicy Bypass -Command ' *)",
+      "Bash(ud575)",
+      "Bash(uc815)",
+      "Bash(uac00)",
+      "Bash(ucd5c)",
+      "Bash(ub274)",
+      "Bash(powershell.exe -Command 'Get-ChildItem '\\\\''M:\\\\MyProject777\\\\kimtaesung_sinanjuso\\\\assets\\\\images\\\\ipad_final_*.png'\\\\'' | Select-Object Name, @{N='\\\\''Size\\(KB\\)'\\\\'';E={[int]\\($_.Length/1KB\\)}} | Format-Table -AutoSize')",
+      "Bash(powershell.exe -Command \"Get-ChildItem 'M:\\\\MyProject777\\\\kimtaesung_sinanjuso\\\\assets\\\\images\\\\' | Select-Object Name | Sort-Object Name\")",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -File \"M:\\\\MyProject777\\\\kimtaesung_sinanjuso\\\\assets\\\\images\\\\fix_ios_screenshots.ps1\")",
+      "Bash(powershell.exe -ExecutionPolicy Bypass -Command ' *)"
     ]
   }
 }

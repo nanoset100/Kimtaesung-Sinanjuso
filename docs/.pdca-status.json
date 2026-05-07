@@ -1,10 +1,11 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-17T07:42:53.295Z",
+  "lastUpdated": "2026-04-17T13:40:30.327Z",
   "activeFeatures": [
     "scripts",
     "kimtaesung_sinanjuso",
-    "Runner"
+    "Runner",
+    "images"
   ],
   "primaryFeature": "scripts",
   "features": {
@@ -46,6 +47,19 @@
         "lastUpdated": "2026-04-17T07:07:50.580Z"
       },
       "lastFile": "M:\\MyProject777\\kimtaesung_sinanjuso\\ios\\Runner\\AppDelegate.swift"
+    },
+    "images": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-17T13:14:20.971Z",
+        "lastUpdated": "2026-04-17T13:40:30.327Z"
+      },
+      "lastFile": "M:\\MyProject777\\kimtaesung_sinanjuso\\assets\\images\\fix_ios_screenshots.ps1"
     }
   },
   "pipeline": {
@@ -56,7 +70,7 @@
   "session": {
     "startedAt": "2026-04-16T00:20:13.820Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-04-17T07:42:53.295Z"
+    "lastActivity": "2026-04-17T13:40:30.327Z"
   },
   "history": [
     {
@@ -92,6 +106,24 @@
     {
       "timestamp": "2026-04-17T07:42:53.295Z",
       "feature": "kimtaesung_sinanjuso",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-17T13:14:20.971Z",
+      "feature": "images",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-17T13:39:14.658Z",
+      "feature": "images",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-17T13:40:30.327Z",
+      "feature": "images",
       "phase": "do",
       "action": "updated"
     }

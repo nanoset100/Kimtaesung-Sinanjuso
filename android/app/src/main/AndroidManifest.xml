@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:label="김태성과 신안"
+        android:label="신안 정책 플랫폼 - 신안의 희망"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

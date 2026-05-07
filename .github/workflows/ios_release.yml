@@ -35,20 +35,77 @@ jobs:
       - name: Pod install
         run: cd ios && pod install --repo-update
 
-      - name: Flutter build iOS (코드사이닝 없이)
+      - name: App Store Connect API Key 파일 생성
+        run: |
+          mkdir -p ~/.private_keys
+          echo "${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}" \
+            > ~/.private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8
+
+      - name: Flutter build iOS (Flutter 아티팩트 생성)
         run: flutter build ios --release --no-codesign
 
-      - name: 코드사이닝 & TestFlight 업로드 (Fastlane)
+      - name: Xcode archive (자동 서명 — 인증서 한도 문제 없음)
+        run: |
+          xcodebuild archive \
+            -workspace ios/Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -archivePath /tmp/Runner.xcarchive \
+            -destination "generic/platform=iOS" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/.private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8 \
+            -authenticationKeyID ${{ secrets.APP_STORE_CONNECT_KEY_ID }} \
+            -authenticationKeyIssuerID ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }} \
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }} \
+            | xcpretty --color || true
+
+          # xcarchive 존재 확인
+          ls /tmp/Runner.xcarchive/
+
+      - name: IPA 내보내기
+        run: |
+          cat > /tmp/ExportOptions.plist << 'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>signingStyle</key>
+            <string>automatic</string>
+            <key>teamID</key>
+            <string>${{ secrets.APPLE_TEAM_ID }}</string>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+          </dict>
+          </plist>
+          PLIST
+
+          mkdir -p build/ios/ipa
+          xcodebuild -exportArchive \
+            -archivePath /tmp/Runner.xcarchive \
+            -exportPath build/ios/ipa \
+            -exportOptionsPlist /tmp/ExportOptions.plist \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath ~/.private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_KEY_ID }}.p8 \
+            -authenticationKeyID ${{ secrets.APP_STORE_CONNECT_KEY_ID }} \
+            -authenticationKeyIssuerID ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+
+          ls build/ios/ipa/
+
+      - name: TestFlight 업로드 (Fastlane)
         env:
           APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: cd ios && bundle exec fastlane beta
 
-      - name: Upload IPA artifact
+      - name: IPA 아티팩트 업로드
         uses: actions/upload-artifact@v4
-        if: success()
+        if: always()
         with:
           name: ios-ipa
           path: build/ios/ipa/*.ipa
